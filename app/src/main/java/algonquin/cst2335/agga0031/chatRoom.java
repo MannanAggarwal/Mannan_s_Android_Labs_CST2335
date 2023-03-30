@@ -7,10 +7,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import algonquin.cst2335.agga0031.data.chatRoomViewModel;
 import algonquin.cst2335.agga0031.databinding.ActivityChatRoomBinding;
 import algonquin.cst2335.agga0031.databinding.SentMessageBinding;
 
@@ -19,6 +22,9 @@ public class chatRoom extends AppCompatActivity {
     ActivityChatRoomBinding binding;
 
     ArrayList<String> messages = new ArrayList<>();
+    private RecyclerView.Adapter myAdapter;
+    chatRoomViewModel chatModel;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +33,21 @@ public class chatRoom extends AppCompatActivity {
         binding = ActivityChatRoomBinding.inflate( getLayoutInflater() );
         setContentView(binding.getRoot());
 
+        chatModel = new ViewModelProvider(this).get(chatRoomViewModel.class);
+        messages = chatModel.messages.getValue();
+        if(messages == null) {
+            chatModel.messages.postValue( messages = new ArrayList<String>());
+        }
+
         binding.sendButton.setOnClickListener(click -> {
             messages.add(binding.textInput.getText().toString());
-
+            myAdapter.notifyItemInserted(messages.size()-1);
             //clears the previous text
             binding.textInput.setText("");
         });
 
-        binding.recycleView.setAdapter(new RecyclerView.Adapter<MyRowHolder>() {
+        binding.recycleView.setLayoutManager(new LinearLayoutManager(this));
+        binding.recycleView.setAdapter(myAdapter = new RecyclerView.Adapter<MyRowHolder>() {
             @NonNull
             @Override
             public MyRowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

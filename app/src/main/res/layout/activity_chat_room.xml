@@ -31,7 +31,7 @@
         android:layout_height="46dp"
         android:ems="10"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sendButton"
-        tools:layout_editor_absoluteY="840dp" />
+        app:layout_constraintStart_toEndOf="@+id/sendButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>
