@@ -49,7 +49,7 @@ public class chatRoom extends AppCompatActivity {
                 MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
             FragmentManager fMgr = getSupportFragmentManager();
             FragmentTransaction tx = fMgr.beginTransaction();
-            tx.add(R.id.fragmentLocation, chatFragment);
+            tx.add(R.id.fragmentLocation, chatFragment).addToBackStack("null");
             tx.replace(R.id.fragmentLocation, chatFragment);
             tx.commit();
 
