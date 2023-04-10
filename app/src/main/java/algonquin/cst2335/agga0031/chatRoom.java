@@ -6,14 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +44,16 @@ public class chatRoom extends AppCompatActivity {
         messages = chatModel.messages.getValue();
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, "database-name").build();
         mDAO = db.cmDAO();
+        chatModel.selectedMessage.observe(this, (newMessageValue) -> {
+
+                MessageDetailsFragment chatFragment = new MessageDetailsFragment(newMessageValue);
+            FragmentManager fMgr = getSupportFragmentManager();
+            FragmentTransaction tx = fMgr.beginTransaction();
+            tx.add(R.id.fragmentLocation, chatFragment);
+            tx.replace(R.id.fragmentLocation, chatFragment);
+            tx.commit();
+
+        });
         setContentView(binding.getRoot());
         if (messages == null) {
 
@@ -136,6 +145,12 @@ public class chatRoom extends AppCompatActivity {
             itemView.setOnClickListener(clk ->  {
 
                 int position = getAbsoluteAdapterPosition();
+                ChatMessage selected = messages.get(position);
+
+                chatModel.selectedMessage.postValue(selected);
+
+                /*
+                int position = getAbsoluteAdapterPosition();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder( chatRoom.this );
                 builder.setTitle("Question:")
@@ -158,6 +173,8 @@ public class chatRoom extends AppCompatActivity {
                                     .show();
                         })
                         .create().show();
+
+                 */
             });
 
 
